@@ -149,6 +149,10 @@ def train(opt):
                     init_scorer(opt.cached_tokens)
                 else:
                     struc_flag = False
+                if opt.drop_worst_after != -1 and epoch >= opt.drop_worst_after:
+                    drop_worst_flag = True
+                else:
+                    drop_worst_flag = True
 
                 epoch_done = False
                     
@@ -165,9 +169,13 @@ def train(opt):
             fc_feats, att_feats, labels, masks, att_masks = tmp
             
             optimizer.zero_grad()
-            model_out = dp_lw_model(fc_feats, att_feats, labels, masks, att_masks, data['gts'], torch.arange(0, len(data['gts'])), sc_flag, struc_flag)
+            model_out = dp_lw_model(fc_feats, att_feats, labels, masks, att_masks, data['gts'], torch.arange(0, len(data['gts'])), sc_flag, struc_flag, drop_worst_flag)
 
-            loss = model_out['loss'].mean()
+            if not drop_worst_flag:
+                loss = model_out['loss'].mean()
+            else:
+                loss = model_out['loss']
+                loss = torch.topk(loss, k=int(loss.shape[0] * (1-opt.drop_worst_rate)), largest=False)[0].mean()
 
             loss.backward()
             utils.clip_gradient(optimizer, opt.grad_clip)

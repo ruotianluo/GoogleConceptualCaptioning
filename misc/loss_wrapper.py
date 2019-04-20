@@ -15,13 +15,15 @@ class LossWrapper(torch.nn.Module):
         self.struc_crit = utils.StructureLosses(opt)
 
     def forward(self, fc_feats, att_feats, labels, masks, att_masks, gts, gt_indices,
-                sc_flag, struc_flag):
+                sc_flag, struc_flag, drop_worst_flag):
         opt = self.opt
         
         out = {}
+
+        reduction = 'none' if drop_worst_flag else 'mean'
         if struc_flag:
             if opt.structure_loss_weight < 1:
-                lm_loss = self.crit(self.model(fc_feats, att_feats, labels, att_masks), labels[:,1:], masks[:,1:])
+                lm_loss = self.crit(self.model(fc_feats, att_feats, labels, att_masks), labels[:,1:], masks[:,1:], reduction=reduction)
             else:
                 lm_loss = torch.tensor(0).type_as(fc_feats)
             gen_result, sample_logprobs = self.model(fc_feats, att_feats, att_masks,
@@ -31,12 +33,12 @@ class LossWrapper(torch.nn.Module):
                     'sample_n': opt.structure_sample_n},
                 mode='sample')
             gts = [gts[_] for _ in gt_indices.tolist()]
-            struc_loss = self.struc_crit(sample_logprobs, gen_result, gts)
+            struc_loss = self.struc_crit(sample_logprobs, gen_result, gts, reduction=reduction)
             loss = (1-opt.structure_loss_weight) * lm_loss + opt.structure_loss_weight * struc_loss
             out['lm_loss'] = lm_loss
             out['struc_loss'] = struc_loss
         elif not sc_flag:
-            loss = self.crit(self.model(fc_feats, att_feats, labels, att_masks), labels[:,1:], masks[:,1:])
+            loss = self.crit(self.model(fc_feats, att_feats, labels, att_masks), labels[:,1:], masks[:,1:], reduction=reduction)
         else:
             self.model.eval()
             with torch.no_grad():
@@ -46,7 +48,7 @@ class LossWrapper(torch.nn.Module):
             gts = [gts[_] for _ in gt_indices.tolist()]
             reward = get_self_critical_reward(greedy_res, gts, gen_result, self.opt)
             reward = torch.from_numpy(reward).float().to(gen_result.device)
-            loss = self.rl_crit(sample_logprobs, gen_result.data, reward)
             out['reward'] = reward[:,0].mean()
+            loss = self.rl_crit(sample_logprobs, gen_result.data, reward, reduction=reduction)
         out['loss'] = loss
         return out

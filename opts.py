@@ -165,6 +165,12 @@ def parse_opt():
     parser.add_argument('--entropy_reward_weight', type=float, default=0,
                     help='Entropy reward, seems very interesting')
 
+    # Training techniques
+    parser.add_argument('--drop_worst_after', type=float, default=-1,
+                    help='')
+    parser.add_argument('--drop_worst_rate', type=float, default=0,
+                    help='')
+
     args = parser.parse_args()
 
     # Check if args are valid
