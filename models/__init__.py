@@ -15,6 +15,8 @@ from .OldModel import ShowAttendTellModel, AllImgModel
 from .AttModel import *
 from .TransformerModel import TransformerModel
 
+from .VSEFCModel import VSEFCModel
+
 def setup(opt):
     if opt.caption_model == 'fc':
         model = FCModel(opt)

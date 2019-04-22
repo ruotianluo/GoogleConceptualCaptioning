@@ -22,6 +22,9 @@ The json file has a dict that contains:
 - an 'images' field that is a list holding auxiliary information for each image, 
   such as in particular the 'split' it was assigned to.
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 import os
 import json
@@ -117,8 +120,8 @@ def main(params):
 
   ngram_words, ngram_idxs, ref_len = build_dict(imgs, wtoi, params)
 
-  utils.pickle_dump({'document_frequency': ngram_words, 'ref_len': ref_len}, open(params['output_pkl']+'-words.p','w'), protocol=cPickle.HIGHEST_PROTOCOL)
-  utils.pickle_dump({'document_frequency': ngram_idxs, 'ref_len': ref_len}, open(params['output_pkl']+'-idxs.p','w'), protocol=cPickle.HIGHEST_PROTOCOL)
+  utils.pickle_dump({'document_frequency': ngram_words, 'ref_len': ref_len}, open(params['output_pkl']+'-words.p','w'))
+  utils.pickle_dump({'document_frequency': ngram_idxs, 'ref_len': ref_len}, open(params['output_pkl']+'-idxs.p','w'))
 
 if __name__ == "__main__":
 

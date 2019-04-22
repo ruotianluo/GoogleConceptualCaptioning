@@ -20,7 +20,7 @@ def parse_opt():
                                               Note: this file contains absolute paths, be careful when moving files around;
                         'model.ckpt-*'      : file(s) with model definition (created by tf)
                     """)
-    parser.add_argument('--cached_tokens', type=str, default='coco-train-idxs',
+    parser.add_argument('--cached_tokens', type=str, default='google-train-idxs',
                     help='Cached token file for calculating cider score during self critical training.')
 
     # Model settings
@@ -171,6 +171,8 @@ def parse_opt():
     parser.add_argument('--drop_worst_rate', type=float, default=0,
                     help='')
 
+    add_vse_options(parser)
+
     args = parser.parse_args()
 
     # Check if args are valid
@@ -188,6 +190,39 @@ def parse_opt():
     assert args.train_only == 0 or args.train_only == 1, "language_eval should be 0 or 1"
 
     return args
+
+def add_vse_options(parser):
+    parser.add_argument('--initialize_retrieval', type=str, default=None,
+	                help="""xxxx.pth""")
+    # vse
+    parser.add_argument('--vse_model', type=str, default="None",
+                    help='fc, None')
+    parser.add_argument('--vse_rnn_type', type=str, default='gru',
+                    help='rnn, gru, or lstm')
+    parser.add_argument('--vse_margin', default=0.2, type=float,
+                    help='Rank loss margin; when margin is -1, it means use binary cross entropy (usually works with MLP).')
+    parser.add_argument('--vse_word_dim', default=300, type=int,
+                    help='Dimensionality of the word embedding.')
+    parser.add_argument('--vse_embed_size', default=1024, type=int,
+                    help='Dimensionality of the joint embedding.')
+    parser.add_argument('--vse_num_layers', default=1, type=int,
+                    help='Number of GRU layers.')
+    parser.add_argument('--vse_max_violation', default=1, type=int,
+                    help='Use max instead of sum in the rank loss.')
+    parser.add_argument('--vse_measure', default='cosine',
+                    help='Similarity measure used (cosine|order|MLP)')
+    parser.add_argument('--vse_use_abs', default=0, type=int,
+                    help='Take the absolute value of embedding vectors.')
+    parser.add_argument('--vse_no_imgnorm', default=0, type=int,
+                    help='Do not normalize the image embeddings.')
+    parser.add_argument('--vse_loss_type', default='contrastive', type=str,
+                    help='contrastive or pair')
+    parser.add_argument('--vse_pool_type', default='last', type=str,
+                    help='last, mean, max')
+
+    parser.add_argument('--retrieval_reward_weight', default=0, type=float,
+                    help='gumbel, reinforce')
+
 
 def add_eval_options(parser):
     # Basic options

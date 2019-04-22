@@ -35,6 +35,8 @@ def add_summary_value(writer, key, value, iteration):
 def train(opt):
     # Deal with feature things before anything
     opt.use_fc, opt.use_att = utils.if_use_feat(opt.caption_model)
+    if opt.vse_model == 'fc':
+        opt.use_fc = True
     if opt.use_box: opt.att_feat_size = opt.att_feat_size + 5
 
     loader = DataLoader(opt)
@@ -82,7 +84,7 @@ def train(opt):
     model = models.setup(opt).cuda()
     del opt.vocab
     dp_model = torch.nn.DataParallel(model)
-    lw_model = LossWrapper(model, opt)
+    lw_model = LossWrapper(model, opt).cuda()
     dp_lw_model = torch.nn.DataParallel(lw_model)
 
     epoch_done = True
@@ -152,7 +154,7 @@ def train(opt):
                 if opt.drop_worst_after != -1 and epoch >= opt.drop_worst_after:
                     drop_worst_flag = True
                 else:
-                    drop_worst_flag = True
+                    drop_worst_flag = False
 
                 epoch_done = False
                     
