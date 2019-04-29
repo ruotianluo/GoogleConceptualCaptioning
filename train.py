@@ -177,7 +177,13 @@ def train(opt):
                 loss = model_out['loss'].mean()
             else:
                 loss = model_out['loss']
-                loss = torch.topk(loss, k=int(loss.shape[0] * (1-opt.drop_worst_rate)), largest=False)[0].mean()
+                loss, idx = torch.topk(loss, k=int(loss.shape[0] * (1-opt.drop_worst_rate)), largest=False)
+                loss = loss.mean()
+
+                idx = set(idx.tolist())
+                for ii, s in enumerate(utils.decode_sequence(loader.get_vocab(), labels.cpu()[:, 1:])):
+                    if ii not in idx:
+                        print(s)
 
             loss.backward()
             utils.clip_gradient(optimizer, opt.grad_clip)
