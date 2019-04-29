@@ -441,3 +441,10 @@ def get_std_opt(model, factor=1, warmup=2000):
     return NoamOpt(model.model.tgt_embed[0].d_model, factor, warmup,
             torch.optim.Adam(model.parameters(), lr=0, betas=(0.9, 0.98), eps=1e-9))
     
+
+def post_processing_for_conceptual(s):
+    print('Test before use!!!!!!!!!!!!!!!!!')
+    if s.endswith('stock photo #'):
+        s = s[:s.find('stock photo')]
+    return s
+    

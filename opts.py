@@ -287,6 +287,9 @@ def add_eval_options(parser):
                     help='if we need to print out all beam search beams.')
     parser.add_argument('--verbose_loss', type=int, default=0, 
                     help='If calculate loss using ground truth during evaluation')
+    
+    # post processing
+    parser.add_argument('--post_processing', type=int, default=0, help='nasty post processing')
 
 def add_diversity_opts(parser):
     parser.add_argument('--sample_n', type=int, default=1,

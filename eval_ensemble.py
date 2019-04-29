@@ -99,6 +99,10 @@ print('loss: ', loss)
 if lang_stats:
   print(lang_stats)
 
+if opt.post_processing == 1:
+    for i in range(len(split_predictions)):
+      split_predictions[i]['caption'] = utils.post_processing_for_conceptual(split_predictions[i]['caption'])
+
 if opt.dump_json == 1:
     # dump the json
     json.dump(split_predictions, open('vis/vis.json', 'w'))
