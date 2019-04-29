@@ -85,3 +85,4 @@ if opt.post_processing == 1:
 if opt.dump_json == 1:
     # dump the json
     json.dump(split_predictions, open('vis/vis.json', 'w'))
+    json.dump(split_predictions, open(os.path.join('eval_results/', opt.id + '_' + opt.split + '.json'), 'w'))
