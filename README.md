@@ -1,8 +1,15 @@
 # Code for conceptual dataset challenge
 
+This is code by TTIC+BIU team for [conceptual captions challenge](http://www.conceptualcaptions.com/). This code shares highly with [self-critical.pytorch](https://github.com/ruotianluo/self-critical.pytorch).
+
+The modified parts are:
+
+- the json file in coco-caption is replaced by conceptual one.
+- providing links for pretrained features and preprocessed files.
+
 ## Only test by docker Image:
 
-DockerImage is located here:
+Docker Image is located here:
 
 ```
 docker pull ruotianluo/conceptual_ens3 (1st human rating)
