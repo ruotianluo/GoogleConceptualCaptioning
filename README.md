@@ -1,3 +1,61 @@
+# Code for conceptual dataset challenge
+
+## Only test by docker Image:
+
+DockerImage is located here:
+
+```
+docker pull ruotianluo/conceptual_ens3 (1st human rating)
+docker pull ruotianluo/conceptual_ens5 (1st CIDEr rating)
+```
+
+Run docker image:
+```
+nvidia-docker run --rm -ti --ipc=host -a stdin -a stdout -a stderr <DOCKER_IMAGE_ID>
+```
+
+To generate captions for new images:
+
+```
+python /conceptual-captions/generate_caption.py $IMAGE_BASENAME_FILE $IMAGE_DIR $OUTPUT_FILE
+```
+The sample of `$IMAGE_BASENAME_FILE` and `$IMAGE_DIR` can be seen in `test_images.txt` and `test_images/` in [https://github.com/google-research-datasets/conceptual-captions/tree/master/competition/skeleton/conceptual-captions](https://github.com/google-research-datasets/conceptual-captions/tree/master/competition/skeleton/conceptual-captions)
+
+
+## Train
+
+### Download neccesary files to data/
+
+```
+https://drive.google.com/open?id=1CADdB12dtwIpSEDHXEY26VMJO7xX7R8M
+```
+
+preextracted features
+
+```
+https://drive.google.com/open?id=1rG1brXzUMZMoMXwJfi3lw7gMZuw6Vjxr
+https://drive.google.com/open?id=1DaitWCRVAo4YoJYbwpYnVfi4zVNJYmQc
+
+```
+
+### Training
+
+The training scripts are in `scripts/run*.sh`.
+
+For example for lstm model:
+
+```
+bash scripts/run_lstm.sh
+```
+
+To use cider optimization:
+
+```
+bash scripts/run_lstm_rl.sh
+```
+
+---
+
 # Self-critical Sequence Training for Image Captioning (+ misc.)
 
 This repository includes the unofficial implementation [Self-critical Sequence Training for Image Captioning](https://arxiv.org/abs/1612.00563) and [Bottom-Up and Top-Down Attention for Image Captioning and Visual Question Answering](https://arxiv.org/abs/1707.07998).
