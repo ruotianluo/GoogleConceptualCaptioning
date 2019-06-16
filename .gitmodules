@@ -4,3 +4,4 @@
 [submodule "coco-caption"]
 	path = coco-caption
 	url = https://github.com/ruotianluo/coco-caption.git
+	branch = conceptual
