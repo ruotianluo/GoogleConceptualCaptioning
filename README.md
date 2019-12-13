@@ -61,6 +61,13 @@ To use cider optimization:
 bash scripts/run_lstm_rl.sh
 ```
 
+### Google drive link containing everything
+
+```
+https://drive.google.com/drive/folders/18bRlDMt589kC5e6dtY-LQJovPYjlNHqV
+```
+
+
 ---
 
 # Self-critical Sequence Training for Image Captioning (+ misc.)
